@@ -30,3 +30,7 @@ assert(metadata.version == '1.0c')
 -- Test the identification
 assert(identify('tests/gog_another_world_20th_anniversary_edition_2.0.0.2.sh-header') == 'gog')
 assert(identify('tests/lugaru-full-linux-x86-1.0c.bin-header') == 'mojo')
+
+-- Test the reverse DNS
+assert(reverse_dns('gog.com') == 'com.gog')
+assert(reverse_dns('wolfire.com') == 'com.wolfire')
