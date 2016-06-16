@@ -101,6 +101,28 @@ function get_id(metadata)
 	return metadata.id_prefix .. '.' .. name
 end
 
+-- From https://rosettacode.org/wiki/Reverse_words_in_a_string#Lua
+function table.reverse(a)
+	local res = {}
+	for i = #a, 1, -1 do
+		res[#res+1] = a[i]
+	end
+	return res
+end
+
+function splittokens(s)
+	local res = {}
+	for w in s:gmatch("%w+") do
+		res[#res+1] = w
+	end
+	return res
+end
+
+function reverse_dns(vendor)
+	local tokens = splittokens(vendor)
+	return table.concat(table.reverse(tokens), '.')
+end
+
 function get_metadata_gog(file)
 	local metadata = {}
 	data = read_all(ROOT_DIR .. '/files/lib/game/scripts/config.lua')
@@ -108,7 +130,8 @@ function get_metadata_gog(file)
 		return nil
 	end
 
-	metadata.id_prefix = 'com.gog'
+	local vendor = data:match('vendor = "(.-)"')
+	metadata.id_prefix = reverse_dns(vendor)
 	metadata.name = data:match('game_title = "(.-)"')
 	metadata.version = data:match('version = "(.-)"')
 	local executable = data:match('commandline = "(.-)"')
