@@ -236,9 +236,20 @@ function save_desktop(metadata)
 	return true
 end
 
+function file_exists(path)
+	local stat = posix.stat(path)
+	if not stat then
+		return false
+	end
+	return true
+end
+
 function save_icon(metadata)
-	local ret = os.rename(ROOT_DIR .. 'files/lib/game/data/noarch/' .. metadata.icon,
-		              ROOT_DIR .. 'export/share/icons/' .. metadata.id .. '.png')
+	path = ROOT_DIR .. 'files/lib/game/data/noarch/' .. metadata.icon
+	if not file_exists(path) then
+		path = ROOT_DIR .. 'files/lib/game/data/' .. metadata.icon
+	end
+	local ret = os.rename(path, ROOT_DIR .. 'export/share/icons/' .. metadata.id .. '.png')
 	if not ret then return false end
 	return true
 end
