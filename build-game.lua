@@ -301,6 +301,8 @@ function handle(file)
 		print ("Could not export build for " .. file)
 		return 1
 	end
+
+	-- FIXME remove the temp dir
 end
 
 local file = nil
