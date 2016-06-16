@@ -22,7 +22,7 @@
 local io = require "io"
 local posix = require "posix"
 
-TYPE_SNIFFING_BUFFER_SIZE = 32 * 1024
+TYPE_SNIFFING_BUFFER_SIZE = 256 * 1024
 ROOT_DIR = 'exploded-flatpak-game/'
 
 function usage()
