@@ -69,5 +69,5 @@ function file_exists(path)
 	if not stat then
 		return false
 	end
-	return S_ISREG(stat)
+	return stat.type == 'regular'
 end

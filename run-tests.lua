@@ -34,3 +34,7 @@ assert(identify('tests/lugaru-full-linux-x86-1.0c.bin-header') == 'mojo')
 -- Test the reverse DNS
 assert(reverse_dns('gog.com') == 'com.gog')
 assert(reverse_dns('wolfire.com') == 'com.wolfire')
+
+-- Test file exists
+assert(file_exists('run-tests.lua'))
+assert(not file_exists('DOES NOT EXIST.lua'))
