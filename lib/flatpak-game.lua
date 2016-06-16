@@ -174,13 +174,8 @@ function is_keyword(str)
 	return false
 end
 
-function get_metadata_mojo_compiled(file)
+function get_metadata_mojo_compiled_parse(data)
 	local metadata = {}
-	data = read_all(ROOT_DIR .. '/files/lib/game/scripts/config.luac')
-	if not data then
-		return nil
-	end
-
 	local tokens = splitfields(data)
 	local vendor
 	local executable
@@ -211,6 +206,15 @@ function get_metadata_mojo_compiled(file)
 	metadata.id = get_id(metadata)
 
 	return metadata
+end
+
+function get_metadata_mojo_compiled(file)
+	data = read_all(ROOT_DIR .. '/files/lib/game/scripts/config.luac')
+	if not data then
+		return nil
+	end
+
+	return get_metadata_mojo_compiled_parse(data)
 end
 
 function get_metadata_mojo(file)
