@@ -260,10 +260,10 @@ end
 
 
 function create_hier()
-	return mkdir (ROOT_DIR .. '/files/bin', true) and
-	       mkdir (ROOT_DIR .. '/files/lib/game', true) and
-	       mkdir (ROOT_DIR .. '/export/share/applications', true) and
-	       mkdir (ROOT_DIR .. '/export/share/icons/', true)
+	return mkdir_with_parents (ROOT_DIR .. '/files/bin') and
+	       mkdir_with_parents (ROOT_DIR .. '/files/lib/game') and
+	       mkdir_with_parents (ROOT_DIR .. '/export/share/applications') and
+	       mkdir_with_parents (ROOT_DIR .. '/export/share/icons/')
 end
 
 function read_all(file)

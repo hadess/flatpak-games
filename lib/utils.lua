@@ -60,6 +60,10 @@ function mkdir(path, recursive)
     end
 end
 
+function mkdir_with_parents(path)
+	return mkdir (path, true)
+end
+
 function file_exists(path)
 	local stat = posix.stat(path)
 	if not stat then
