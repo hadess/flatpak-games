@@ -31,6 +31,8 @@ end
 
 -- FIXME should be in separate modules
 function identify_gog(buffer)
+	-- the GOG.com installers use MojoSetup inside a self-extracting
+	-- to provide archive integrity checks
 	if buffer:match('with modifications for mojosetup and GOG%.com installer%.') then
 		return true
 	end
