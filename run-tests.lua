@@ -27,3 +27,6 @@ assert(metadata)
 assert(metadata.id_prefix == 'com.wolfire')
 assert(metadata.version == '1.0c')
 
+-- Test the identification
+assert(identify('tests/gog_another_world_20th_anniversary_edition_2.0.0.2.sh-header') == 'gog')
+assert(identify('tests/lugaru-full-linux-x86-1.0c.bin-header') == 'mojo')
