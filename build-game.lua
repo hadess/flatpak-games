@@ -137,8 +137,23 @@ function get_metadata_gog(file)
 	local executable = data:match('commandline = "(.-)"')
 	metadata.executable = string.gsub(executable, '%%0', '/app/lib/game/data/noarch/')
 	metadata.icon = data:match('icon = "(.-)"')
+	metadata.id = get_id(metadata)
 
-	if not metadata.id_prefix or
+	return metadata
+end
+
+function get_metadata(archive_type, file)
+	local metadata
+
+	if archive_type == 'gog' then
+		metadata = get_metadata_gog(file)
+	else
+		error('Can not get metadata for unhandled archive_type ' .. (archive_type or '<unset>'))
+	end
+
+	-- Verify that the metadata is complete
+	if not metadata or
+	   not metadata.id_prefix or
 	   not metadata.name or
 	   not metadata.version or
 	   not metadata.executable or
@@ -146,17 +161,7 @@ function get_metadata_gog(file)
 		return nil
 	end
 
-	metadata.id = get_id(metadata)
-
 	return metadata
-end
-
-function get_metadata(archive_type, file)
-	if archive_type == 'gog' then
-		return get_metadata_gog(file)
-	else
-		error('Can not get metadata for unhandled archive_type ' .. (archive_type or '<unset>'))
-	end
 end
 
 -- From http://luci.subsignal.org/trac/browser/luci/trunk/libs/core/luasrc/fs.lua?rev=4103
