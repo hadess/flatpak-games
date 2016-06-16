@@ -315,7 +315,7 @@ function write_line(f, line)
 	f:write(line .. '\n')
 end
 
-function save_manifest(metadata)
+function save_manifest(metadata, enable_network)
 	local f = io.open(ROOT_DIR .. '/metadata', "w")
 	if not f then return false end
 
@@ -329,8 +329,11 @@ function save_manifest(metadata)
 	f:write('\n')
 
 	write_line(f, '[Context]')
-	-- FIXME export the network too?
-	write_line(f, 'shared=ipc;')
+	if enable_network then
+		write_line(f, 'shared=network;ipc;')
+	else
+		write_line(f, 'shared=ipc;')
+	end
 	write_line(f, 'sockets=x11;wayland;pulseaudio;')
 	write_line(f, 'devices=dri;')
 
@@ -349,7 +352,7 @@ function build_export()
 	return true
 end
 
-function handle(file)
+function handle(file, options)
 	local archive_type = identify(file)
 
 	if archive_type == nil then
@@ -378,7 +381,7 @@ function handle(file)
 		return 1
 	end
 
-	if not save_manifest(metadata) then
+	if not save_manifest(metadata, options.network) then
 		print ("Failed to create metadata file for " .. file)
 		return 1
 	end

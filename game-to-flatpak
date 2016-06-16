@@ -23,13 +23,24 @@
 local fg = require "lib.flatpak-game"
 
 function usage()
-	print("build-game.lua [FILE...]")
+	print("build-game.lua [--network] [FILE...]")
 end
 
 local file = nil
+local options = {}
 for k, v in ipairs(arg) do
-	file = v
-	break
+	if string.sub (v, 1, 2) == "--" then
+		if v == '--network' then
+			options.network = true
+		else
+			print ("Unknown option '" .. v .. "'")
+			usage()
+			return 1
+		end
+	else
+		file = v
+		break
+	end
 end
 
 if not file then
@@ -37,5 +48,5 @@ if not file then
 	return 1
 end
 
-local ret = handle(file)
+local ret = handle(file, options)
 return ret
