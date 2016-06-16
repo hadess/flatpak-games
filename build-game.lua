@@ -39,6 +39,14 @@ function identify_gog(buffer)
 	return false
 end
 
+function identify_mojo(buffer)
+	if buffer:match('mojosetup,') and
+	   buffer:match('MOJOSETUP_LOGLEVEL') then
+		return true
+	end
+	return false
+end
+
 function identify(file)
 	local f = io.open(file, "rb")
 	if not f then
@@ -49,6 +57,8 @@ function identify(file)
 	f:close()
 	if identify_gog(buffer) then
 		return 'gog'
+	elseif identify_mojo(buffer) then
+		return 'mojo'
 	else
 		return nil
 	end
@@ -70,15 +80,36 @@ function verify_gog(file)
 	return false
 end
 
+function verify_mojo(file)
+	-- FIXME verify the quoting
+	local command = 'unzip -t ' .. file
+	local f = io.popen(command, 'r')
+	if not f then
+		return false
+	end
+	local s = f:read('*a')
+	local exit_code = f:close()
+	if exit_code or
+	   exit_code == 0 then
+		return true
+	end
+
+	-- FIXME return true here until we can skip forward
+	-- in the file to avoid errors
+	return true
+end
+
 function verify(archive_type, file)
 	if archive_type == 'gog' then
 		return verify_gog(file)
+	elseif archive_type == 'mojo' then
+		return verify_mojo(file)
 	else
 		error('Can not verify unhandled archive_type ' .. (archive_type or '<unset>'))
 	end
 end
 
-function unpack_gog(file)
+function unpack_mojo(file)
 	-- FIXME replace with lua-archive:
 	-- https://github.com/brimworks/lua-archive
 	local command = 'unzip -d ' .. ROOT_DIR .. '/files/lib/game/ ' .. file
@@ -91,8 +122,9 @@ function unpack_gog(file)
 end
 
 function unpack(archive_type, file)
-	if archive_type == 'gog' then
-		return unpack_gog(file)
+	if archive_type == 'gog' or
+	   archive_type == 'mojo' then
+		return unpack_mojo(file)
 	else
 		error('Can not unpack unhandled archive_type ' .. (archive_type or '<unset>'))
 	end
@@ -125,7 +157,68 @@ function reverse_dns(vendor)
 	return table.concat(table.reverse(tokens), '.')
 end
 
-function get_metadata_gog(file)
+function splitfields(s)
+	local res = {}
+	for w in s:gmatch("[%g ]+") do
+		res[#res+1] = w
+	end
+	return res
+end
+
+function is_keyword(str)
+	if str == 'vendor' or
+	   str == 'id' or
+	   str == 'description' or
+	   str == 'version' or
+	   str == 'name' or
+	   str == 'icon' or
+	   str == 'commandline' or
+	   str == 'category' then
+		return true
+	end
+	return false
+end
+
+function get_metadata_mojo_compiled(file)
+	local metadata = {}
+	data = read_all(ROOT_DIR .. '/files/lib/game/scripts/config.luac')
+	if not data then
+		return nil
+	end
+
+	local tokens = splitfields(data)
+	local vendor
+	local executable
+	local skip_next = false
+	for index,value in ipairs(tokens) do
+		if skip_next then
+			skip_next = false
+		elseif value == 'vendor' and
+		       not is_keyword(tokens[index + 1]) then
+			vendor = tokens[index + 1]
+		elseif value == 'description' and
+		       not is_keyword(tokens[index + 1]) then
+			metadata.name = tokens[index + 1]
+		elseif value == 'version' and
+		       not is_keyword(tokens[index + 1]) then
+			metadata.version = tokens[index + 1]
+		elseif value == 'icon' and
+		       not is_keyword(tokens[index + 1]) then
+			metadata.icon = tokens[index + 1]
+		elseif value == 'commandline' and
+		       not is_keyword(tokens[index + 1]) then
+			executable = tokens[index + 1]
+		end
+	end
+
+	metadata.id_prefix = reverse_dns(vendor)
+	metadata.executable = string.gsub(executable, '%%0', '/app/lib/game/data/noarch/')
+	metadata.id = get_id(metadata)
+
+	return metadata
+end
+
+function get_metadata_mojo(file)
 	local metadata = {}
 	data = read_all(ROOT_DIR .. '/files/lib/game/scripts/config.lua')
 	if not data then
@@ -147,8 +240,12 @@ end
 function get_metadata(archive_type, file)
 	local metadata
 
-	if archive_type == 'gog' then
-		metadata = get_metadata_gog(file)
+	if archive_type == 'gog' or
+	   archive_type == 'mojo' then
+		metadata = get_metadata_mojo(file)
+		if not metadata then
+			metadata = get_metadata_mojo_compiled(file)
+		end
 	else
 		error('Can not get metadata for unhandled archive_type ' .. (archive_type or '<unset>'))
 	end
@@ -244,7 +341,7 @@ function file_exists(path)
 	return true
 end
 
-function save_icon(metadata)
+function save_icon_mojo(metadata)
 	path = ROOT_DIR .. 'files/lib/game/data/noarch/' .. metadata.icon
 	if not file_exists(path) then
 		path = ROOT_DIR .. 'files/lib/game/data/' .. metadata.icon
@@ -252,6 +349,15 @@ function save_icon(metadata)
 	local ret = os.rename(path, ROOT_DIR .. 'export/share/icons/' .. metadata.id .. '.png')
 	if not ret then return false end
 	return true
+end
+
+function save_icon(archive_type, metadata)
+	if archive_type == 'gog' or
+	   archive_type == 'mojo' then
+		return save_icon_mojo(metadata)
+	else
+		error('Can not save icon for unhandled archive_type ' .. (archive_type or '<unset>'))
+	end
 end
 
 function write_line(f, line)
@@ -331,7 +437,7 @@ function handle(file)
 		return 1
 	end
 
-	if not save_icon(metadata) then
+	if not save_icon(archive_type, metadata) then
 		print ("Failed to save icon file for " .. file)
 		return 1
 	end
