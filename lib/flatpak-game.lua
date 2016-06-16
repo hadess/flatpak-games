@@ -19,7 +19,7 @@
 --]]
 
 local io = require "io"
-local posix = require "posix"
+require "lib.utils"
 
 TYPE_SNIFFING_BUFFER_SIZE = 256 * 1024
 ROOT_DIR = 'exploded-flatpak-game/'
@@ -258,46 +258,6 @@ function get_metadata(archive_type, file)
 	return metadata
 end
 
--- From http://luci.subsignal.org/trac/browser/luci/trunk/libs/core/luasrc/fs.lua?rev=4103
--- FIXME move to a utility section
---- Create a new directory, recursively on demand.
--- @param path      String with the name or path of the directory to create
--- @param recursive Create multiple directory levels (optional, default is true)
--- @return          Number with the return code, 0 on sucess or nil on error
--- @return          String containing the error description on error
--- @return          Number containing the os specific errno on error
-function mkdir(path, recursive)
-    if recursive then
-        local base = "."
-
-        if path:sub(1,1) == "/" then
-            base = ""
-            path = path:gsub("^/+","")
-        end
-
-        for elem in path:gmatch("([^/]+)/*") do
-            base = base .. "/" .. elem
-
-            local stat = posix.stat( base )
-
-            if not stat then
-                local stat, errmsg, errno = posix.mkdir( base )
-
-                if type(stat) ~= "number" or stat ~= 0 then
-                    return stat, errmsg, errno
-                end
-            else
-                if stat.type ~= "directory" then
-                    return nil, base .. ": File exists", 17
-                end
-            end
-        end
-
-        return 0
-    else
-        return posix.mkdir( path )
-    end
-end
 
 function create_hier()
 	return mkdir (ROOT_DIR .. '/files/bin', true) and
@@ -325,14 +285,6 @@ function save_desktop(metadata)
 	write_line(f, 'Exec=' .. metadata.executable)
 	write_line(f, 'Categories=Game;')
 	f:close()
-	return true
-end
-
-function file_exists(path)
-	local stat = posix.stat(path)
-	if not stat then
-		return false
-	end
 	return true
 end
 
