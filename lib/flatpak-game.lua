@@ -24,10 +24,6 @@ local posix = require "posix"
 TYPE_SNIFFING_BUFFER_SIZE = 256 * 1024
 ROOT_DIR = 'exploded-flatpak-game/'
 
-function usage()
-	print("build-game.lua [FILE...]")
-end
-
 -- FIXME should be in separate modules
 function identify_gog(buffer)
 	-- the GOG.com installers use MojoSetup inside a self-extracting
@@ -451,16 +447,4 @@ function handle(file)
 	-- FIXME remove the temp dir
 end
 
-local file = nil
-for k, v in ipairs(arg) do
-	file = v
-	break
-end
 
-if not file then
-	usage()
-	return 1
-end
-
-local ret = handle(file)
-return ret
