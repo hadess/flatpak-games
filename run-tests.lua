@@ -48,8 +48,31 @@ assert(get_arch_for_dir('tests/x86_64') == 'x86_64')
 assert(get_arch_for_dir('tests/mixed') == 'x86_64')
 assert(get_arch_for_dir('tests/i386') == 'i386')
 
+-- Verify deb patch URLs
+assert(verify_missing_lib_args('bleh', '1.4', 'x86_64'))
+local ret, error = verify_missing_lib_args('bleh', '1.1', 'x86_64')
+assert(not ret)
+assert(error == 'Unsupported framework version 1.1')
+ret, error = verify_missing_lib_args('bleh', '1.2', 'super8')
+assert(not ret)
+assert(error == 'Unsupported architecture super8')
+assert(get_libcaca_dl_page_url('1.2', 'x86_64'))
+
+local body = read_all('tests/deb-download.html')
+assert(parse_deb_download_page(body) == 'http://mirrors.kernel.org/ubuntu/pool/main/libc/libcaca/libcaca0_0.99.beta18-1ubuntu5_i386.deb')
+
+local deb = read_all('tests/libcaca0_0.99.beta18-1ubuntu5_i386.deb')
+local lib = unpack_libcaca_deb(deb)
+local lib_ref = read_all('tests/libcaca.so.0')
+assert (#lib == 813364)
+assert (#lib == #lib_ref)
+assert(lib_ref == lib)
+
+local deb = read_all('tests/libcaca0_0.99.beta17-2.1ubuntu2_amd64.deb')
+local lib = unpack_libcaca_deb(deb)
+assert(lib)
+
 assert(find_lib_dir('tests', 'i386') == 'tests')
 
 -- Won't work offline
 -- assert(get_url('http://packages.ubuntu.com/precise/amd64/libcaca0/download'))
-

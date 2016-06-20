@@ -8,6 +8,7 @@ formats to flatpak bundles.
  - lua
  - lua-posix
  - lua-socket
+ - lua-archive
  - unzip
  - flatpak
  

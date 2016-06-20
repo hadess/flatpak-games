@@ -20,6 +20,7 @@
 
 local io = require "io"
 require "lib.utils"
+require "lib.libraries-cleanup"
 
 TYPE_SNIFFING_BUFFER_SIZE = 256 * 1024
 ROOT_DIR = 'exploded-flatpak-game/'
