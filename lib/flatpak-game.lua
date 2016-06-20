@@ -214,7 +214,9 @@ function get_metadata_mojo_compiled(file)
 		return nil
 	end
 
-	return get_metadata_mojo_compiled_parse(data)
+	local metadata = get_metadata_mojo_compiled_parse(data)
+	metadata.arch = get_arch_for_dir(ROOT_DIR)
+	return metadata
 end
 
 function get_metadata_mojo(file)
@@ -232,6 +234,7 @@ function get_metadata_mojo(file)
 	metadata.executable = string.gsub(executable, '%%0', '/app/lib/game/data/noarch/')
 	metadata.icon = data:match('icon = "(.-)"')
 	metadata.id = get_id(metadata)
+	metadata.arch = get_arch_for_dir(ROOT_DIR)
 
 	return metadata
 end
@@ -255,7 +258,8 @@ function get_metadata(archive_type, file)
 	   not metadata.name or
 	   not metadata.version or
 	   not metadata.executable or
-	   not metadata.icon then
+	   not metadata.icon or
+	   not metadata.arch then
 		return nil
 	end
 
@@ -322,8 +326,7 @@ function save_manifest(metadata, enable_network)
 	-- http://flatpak.org/developer.html#Anatomy_of_a_Flatpak_App
 	write_line(f, '[Application]')
 	write_line(f, 'name=' .. metadata.id)
-	-- FIXME support i386? ARM?
-	write_line(f, 'runtime=org.freedesktop.Platform/x86_64/1.4')
+	write_line(f, 'runtime=org.freedesktop.Platform/' .. metadata.arch .. '/1.4')
 	-- FIXME is that going to work?
 	write_line(f, 'command=' .. metadata.executable)
 	f:write('\n')
