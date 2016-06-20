@@ -44,5 +44,10 @@ assert(get_arch_for_path('tests/hello_2.9-2+deb8u1_amd64') == 'x86_64')
 assert(get_arch_for_path('tests/hello_2.9-2+deb8u1_arm64') == nil)
 assert(get_arch_for_path('tests/hello_2.9-2+deb8u1_i386') == 'i386')
 
+assert(get_arch_for_dir('tests/x86_64') == 'x86_64')
+assert(get_arch_for_dir('tests/mixed') == 'x86_64')
+assert(get_arch_for_dir('tests/i386') == 'i386')
+
 -- Won't work offline
 -- assert(get_url('http://packages.ubuntu.com/precise/amd64/libcaca0/download'))
+

@@ -103,3 +103,32 @@ function get_arch_for_path(path)
 	end
 	return nil
 end
+
+function get_arch_for_dir(dir)
+	local files = posix.dir(dir)
+	local ret = nil
+	for i, name in ipairs(files) do
+		if name ~= '.' and name ~= '..' then
+			local full_name = string.format('%s/%s', dir, name)
+			local info = posix.stat(full_name)
+			local new_ret = nil
+			if info and info.type == 'directory' then
+				new_ret = get_arch_for_dir(full_name)
+			elseif info and info.type == 'regular' then
+				new_ret = get_arch_for_path(full_name)
+			end
+
+			if new_ret ~= nil then
+				if ret == 'i386' or
+				   ret == nil then
+					ret = new_ret
+				elseif new_ret == 'x86_64' then
+					ret = new_ret
+					break
+				end
+			end
+		end
+	end
+
+	return ret
+end
