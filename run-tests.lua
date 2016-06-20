@@ -38,3 +38,6 @@ assert(reverse_dns('wolfire.com') == 'com.wolfire')
 -- Test file exists
 assert(file_exists('run-tests.lua'))
 assert(not file_exists('DOES NOT EXIST.lua'))
+
+-- Won't work offline
+-- assert(get_url('http://packages.ubuntu.com/precise/amd64/libcaca0/download'))

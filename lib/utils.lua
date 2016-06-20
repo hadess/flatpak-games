@@ -19,6 +19,8 @@
 --]]
 
 local posix = require "posix"
+local socket = require "socket"
+local http = require "socket.http"
 
 -- From http://luci.subsignal.org/trac/browser/luci/trunk/libs/core/luasrc/fs.lua?rev=4103
 --- Create a new directory, recursively on demand.
@@ -70,4 +72,14 @@ function file_exists(path)
 		return false
 	end
 	return stat.type == 'regular'
+end
+
+function get_url(url)
+	local body, code, headers = http.request(url)
+
+	if code == 200 then
+		return body
+	else
+		return nil
+	end
 end
