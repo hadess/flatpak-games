@@ -39,5 +39,10 @@ assert(reverse_dns('wolfire.com') == 'com.wolfire')
 assert(file_exists('run-tests.lua'))
 assert(not file_exists('DOES NOT EXIST.lua'))
 
+-- Architecture detection
+assert(get_arch_for_path('tests/hello_2.9-2+deb8u1_amd64') == 'x86_64')
+assert(get_arch_for_path('tests/hello_2.9-2+deb8u1_arm64') == nil)
+assert(get_arch_for_path('tests/hello_2.9-2+deb8u1_i386') == 'i386')
+
 -- Won't work offline
 -- assert(get_url('http://packages.ubuntu.com/precise/amd64/libcaca0/download'))

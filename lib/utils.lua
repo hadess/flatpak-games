@@ -83,3 +83,23 @@ function get_url(url)
 		return nil
 	end
 end
+
+function get_stdout(command)
+	local f = io.popen(command, 'r')
+	if not f then return nil end
+	local s = f:read('*a')
+	f:close()
+	return s
+end
+
+function get_arch_for_path(path)
+	local command = "file " .. path
+	out = get_stdout(command)
+	if not out then return nil end
+	if out:match('ELF 32%-bit.-Intel 80386') then
+		return 'i386'
+	elseif out:match('ELF 64%-bit.-x86%-64') then
+		return 'x86_64'
+	end
+	return nil
+end
