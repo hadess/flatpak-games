@@ -28,6 +28,14 @@ assert(metadata)
 assert(metadata.id_prefix == 'com.wolfire')
 assert(metadata.version == '1.0c')
 
+-- Test the lua metadata parser
+data = read_all('tests/BaseballStars2.sh-config.lua')
+local metadata = get_metadata_mojo_parse(data)
+assert(metadata)
+assert(metadata.id_prefix == 'com.dotemu')
+assert(metadata.version == '1.00')
+assert(metadata.name == 'Baseball Stars 2')
+
 -- Test the identification
 assert(identify('tests/gog_another_world_20th_anniversary_edition_2.0.0.2.sh-header') == 'gog')
 assert(identify('tests/lugaru-full-linux-x86-1.0c.bin-header') == 'mojo')

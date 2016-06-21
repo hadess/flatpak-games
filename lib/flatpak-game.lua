@@ -231,12 +231,8 @@ function get_metadata_mojo_compiled(file)
 	return metadata
 end
 
-function get_metadata_mojo(file)
+function get_metadata_mojo_parse(data)
 	local metadata = {}
-	data = read_all(ROOT_DIR .. '/files/lib/game/scripts/config.lua')
-	if not data then
-		return nil
-	end
 
 	local vendor = data:match('vendor = "(.-)"')
 	metadata.id_prefix = reverse_dns(vendor)
@@ -248,8 +244,18 @@ function get_metadata_mojo(file)
 	metadata.orig_executable = data:match('commandline = "(.-)"')
 	metadata.icon = data:match('icon = "(.-)"')
 	metadata.id = get_id(metadata)
-	metadata.arch = get_arch_for_dir(ROOT_DIR)
 
+	return metadata
+end
+
+function get_metadata_mojo(file)
+	data = read_all(ROOT_DIR .. '/files/lib/game/scripts/config.lua')
+	if not data then
+		return nil
+	end
+
+	metadata = get_metadata_mojo_parse(data)
+	metadata.arch = get_arch_for_dir(ROOT_DIR)
 	return metadata
 end
 
