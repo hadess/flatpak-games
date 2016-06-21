@@ -385,6 +385,13 @@ function handle(file, options)
 		return 1
 	end
 
+	-- FIXME make this optional
+	local ret, err = add_missing_libcaca(ROOT_DIR, '1.4', metadata.arch)
+	if not ret then
+		print(err)
+		return 1
+	end
+
 	if not save_manifest(metadata, options.network) then
 		print ("Failed to create metadata file for " .. file)
 		return 1
