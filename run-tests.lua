@@ -19,6 +19,7 @@
 --]]
 
 local fg = require "lib.flatpak-game"
+local posix = require "posix"
 
 -- Test the luac metadata parser
 data = read_all('tests/lugaru-full-linux-x86-1.0c.bin-config.luac')
@@ -38,6 +39,14 @@ assert(reverse_dns('wolfire.com') == 'com.wolfire')
 -- Test file exists
 assert(file_exists('run-tests.lua'))
 assert(not file_exists('DOES NOT EXIST.lua'))
+
+-- Add and remove a directory
+assert(mkdir_with_parents('tests/foo/bar/baz/foobazbar') == 0)
+local fd = io.output('tests/foo/bar/baz/foobazbar/contents')
+fd:write('full of contents')
+fd:close()
+remove_dir('tests/foo')
+assert(not posix.stat('tests/foo'))
 
 -- Architecture detection
 assert(get_arch_for_path('tests/hello_2.9-2+deb8u1_amd64') == 'x86_64')

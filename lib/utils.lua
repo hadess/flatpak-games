@@ -162,3 +162,19 @@ function find_lib_dir(dir, arch)
 
 	return ret
 end
+
+function remove_dir(dir)
+	local files = posix.dir(dir)
+	for i, name in ipairs(files) do
+		if name ~= '.' and name ~= '..' then
+			local full_name = string.format('%s/%s', dir, name)
+			local info = posix.stat(full_name)
+			if info and info.type == 'directory' then
+				remove_dir(full_name)
+			elseif info then
+				posix.unlink(full_name)
+			end
+		end
+	end
+	posix.rmdir(dir)
+end
