@@ -61,9 +61,8 @@ function identify(file)
 end
 
 function verify_gog(file)
-	-- FIXME verify the quoting
-	local command = 'sh ' .. file .. ' --check'
-	local f = io.popen(command, 'r')
+	local command = { 'sh', file, '--check' }
+	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
 	end
@@ -77,9 +76,8 @@ function verify_gog(file)
 end
 
 function verify_mojo(file)
-	-- FIXME verify the quoting
-	local command = 'unzip -t ' .. file
-	local f = io.popen(command, 'r')
+	local command = { 'unzip', '-t', file }
+	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
 	end
@@ -108,8 +106,8 @@ end
 function unpack_mojo(file)
 	-- FIXME replace with lua-archive:
 	-- https://github.com/brimworks/lua-archive
-	local command = 'unzip -d ' .. ROOT_DIR .. '/files/lib/game/ ' .. file
-	local f = io.popen(command, 'r')
+	local command = { 'unzip', '-d', ROOT_DIR .. '/files/lib/game/', file }
+	local f = io.popen(shell_quote(command), 'r')
 	if not f then return false end
 	f:read('*a')
 	f:close()
@@ -356,8 +354,8 @@ function save_manifest(metadata, enable_network)
 end
 
 function build_export()
-	local command = 'flatpak build-export repo ' .. ROOT_DIR
-	local f = io.popen(command, 'r')
+	local command = { 'flatpak', 'build-export', 'repo', ROOT_DIR }
+	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
 	end
