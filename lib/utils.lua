@@ -93,8 +93,8 @@ function get_stdout(command)
 end
 
 function get_arch_for_path(path)
-	local command = "file " .. path
-	out = get_stdout(command)
+	local command = { "file", path }
+	out = get_stdout(shell_quote(command))
 	if not out then return nil end
 	if out:match('ELF 32%-bit.-Intel 80386') then
 		return 'i386'
