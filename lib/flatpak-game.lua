@@ -419,7 +419,9 @@ function handle(file, options)
 		return 1
 	end
 
-	-- FIXME remove the temp dir
+	if not options.keep_files then
+		remove_dir(ROOT_DIR)
+	end
 end
 
 
