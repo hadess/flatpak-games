@@ -178,3 +178,13 @@ function remove_dir(dir)
 	end
 	posix.rmdir(dir)
 end
+
+function shell_quote(...)
+	local command = type(...) == 'table' and ... or { ... }
+	for i, s in ipairs(command) do
+		s = (tostring(s) or ''):gsub("'", "'\\''")
+		s = "'" .. s .. "'"
+		command[i] = s
+	end
+	return table.concat(command, ' ')
+end

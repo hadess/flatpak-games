@@ -83,5 +83,15 @@ assert(lib)
 
 assert(find_lib_dir('tests', 'i386') == 'tests')
 
+-- Shell quoting
+-- Tests ported from GLib
+assert(shell_quote("") == "''")
+assert(shell_quote("a") == "'a'")
+assert(shell_quote("(") == "'('")
+assert(shell_quote("'a") == "''\\''a'")
+assert(shell_quote("'") == "''\\'''")
+assert(shell_quote("a'") == "'a'\\'''")
+assert(shell_quote("a'a") == "'a'\\''a'")
+
 -- Won't work offline
 -- assert(get_url('http://packages.ubuntu.com/precise/amd64/libcaca0/download'))
