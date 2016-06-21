@@ -48,6 +48,8 @@ assert(get_arch_for_dir('tests/x86_64') == 'x86_64')
 assert(get_arch_for_dir('tests/mixed') == 'x86_64')
 assert(get_arch_for_dir('tests/i386') == 'i386')
 
+assert(find_lib_dir('tests', 'i386') == 'tests')
+
 -- Won't work offline
 -- assert(get_url('http://packages.ubuntu.com/precise/amd64/libcaca0/download'))
 

@@ -132,3 +132,33 @@ function get_arch_for_dir(dir)
 
 	return ret
 end
+
+-- Similar to get_arch_for_dir()
+function find_lib_dir(dir, arch)
+	if not arch then
+		error('arch is empty')
+	end
+
+	local ret = nil
+	local files = posix.dir(dir)
+	for i, name in ipairs(files) do
+		if name ~= '.' and name ~= '..' then
+			local full_name = string.format('%s/%s', dir, name)
+			local info = posix.stat(full_name)
+			if info and info.type == 'directory' then
+				local libdir = find_lib_dir(full_name, arch)
+				if libdir ~= nil then
+					ret = libdir
+					break
+				end
+			elseif info and info.type == 'regular' and name:match('lib.-%.so.-') then
+				found_arch = get_arch_for_path(full_name)
+				if found_arch == arch then
+					ret = dir
+				end
+			end
+		end
+	end
+
+	return ret
+end
