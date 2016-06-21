@@ -241,6 +241,9 @@ function get_metadata_mojo(file)
 	local vendor = data:match('vendor = "(.-)"')
 	metadata.id_prefix = reverse_dns(vendor)
 	metadata.name = data:match('game_title = "(.-)"')
+	if not metadata.name then
+		metadata.name = data:match("game_title = '(.-)'")
+	end
 	metadata.version = data:match('version = "(.-)"')
 	metadata.orig_executable = data:match('commandline = "(.-)"')
 	metadata.icon = data:match('icon = "(.-)"')
