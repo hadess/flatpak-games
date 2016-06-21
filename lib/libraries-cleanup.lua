@@ -55,6 +55,23 @@ LIBSLANG_URLS = {
 	["1.4"] = LIBSLANG_URLS_TRUSTY
 }
 
+-- From: http://packages.ubuntu.com/precise/libjack0
+LIBJACK_URLS_PRECISE = {
+	["i386"] = 'http://packages.ubuntu.com/precise/i386/libjack0/download',
+	['x86_64'] = 'http://packages.ubuntu.com/precise/amd64/libjack0/download'
+}
+
+-- From: http://packages.ubuntu.com/trusty/libjack0
+LIBJACK_URLS_TRUSTY = {
+	["i386"] = 'http://packages.ubuntu.com/trusty/i386/libjack0/download',
+	['x86_64'] = 'http://packages.ubuntu.com/trusty/amd64/libjack0/download'
+}
+
+LIBJACK_URLS = {
+	["1.2"] = LIBJACK_URLS_PRECISE,
+	["1.4"] = LIBJACK_URLS_TRUSTY
+}
+
 function verify_missing_lib_args(root_dir, framework_version, arch)
 	if not root_dir then
 		return false, ('Missing root directory')
@@ -77,6 +94,10 @@ end
 
 function get_libslang_dl_page_url(framework_version, arch)
 	return LIBSLANG_URLS[framework_version][arch]
+end
+
+function get_libjack_dl_page_url(framework_version, arch)
+	return LIBJACK_URLS[framework_version][arch]
 end
 
 function parse_deb_download_page(body)
@@ -147,6 +168,10 @@ function unpack_libslang_deb(data)
 	return unpack_deb(data, '.-(libslang%.so%.2%..-)$')
 end
 
+function unpack_libjack_deb(data)
+	return unpack_deb(data, '.-(libjack%.so%.0%..-)$')
+end
+
 function add_missing_libcaca(root_dir, framework_version, arch)
 	local ret, error = verify_missing_lib_args(root_dir, framework_version, arch)
 	if not ret then
@@ -194,6 +219,33 @@ function add_missing_libslang(root_dir, framework_version, arch)
 		target_lib_dir = root_dir .. '/files/lib/'
 	end
 	local target_lib_path = target_lib_dir .. '/libslang.so.2'
+	local fd = io.output(target_lib_path)
+	fd:write(lib_data)
+	fd:close()
+
+	return true
+end
+
+function add_missing_libjack(root_dir, framework_version, arch)
+	local ret, error = verify_missing_lib_args(root_dir, framework_version, arch)
+	if not ret then
+		return false, error
+	end
+
+	local url = get_libjack_dl_page_url(framework_version, arch)
+	local body = get_url(url)
+	if not body then
+		return false, 'Failed to get download page at ' .. url
+	end
+	local pkg_url = parse_deb_download_page(body)
+	local pkg = get_url(pkg_url)
+	local lib_data = unpack_libjack_deb(pkg)
+
+	local target_lib_dir = find_lib_dir(root_dir, arch)
+	if not target_lib_dir then
+		target_lib_dir = root_dir .. '/files/lib/'
+	end
+	local target_lib_path = target_lib_dir .. '/libjack.so.0'
 	local fd = io.output(target_lib_path)
 	fd:write(lib_data)
 	fd:close()
