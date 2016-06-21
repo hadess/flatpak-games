@@ -391,6 +391,11 @@ function handle(file, options)
 		print(err)
 		return 1
 	end
+	local ret, err = add_missing_libslang(ROOT_DIR, '1.4', metadata.arch)
+	if not ret then
+		print(err)
+		return 1
+	end
 
 	if not save_manifest(metadata, options.network) then
 		print ("Failed to create metadata file for " .. file)
