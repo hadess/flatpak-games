@@ -38,6 +38,23 @@ LIBCACA_URLS = {
 	["1.4"] = LIBCACA_URLS_TRUSTY
 }
 
+-- From: http://packages.ubuntu.com/precise/libslang2
+LIBSLANG_URLS_PRECISE = {
+	["i386"] = 'http://packages.ubuntu.com/precise/i386/libslang2/download',
+	['x86_64'] = 'http://packages.ubuntu.com/precise/amd64/libslang2/download'
+}
+
+-- From: http://packages.ubuntu.com/trusty/libslang2
+LIBSLANG_URLS_TRUSTY = {
+	["i386"] = 'http://packages.ubuntu.com/trusty/i386/libslang2/download',
+	['x86_64'] = 'http://packages.ubuntu.com/trusty/amd64/libslang2/download'
+}
+
+LIBSLANG_URLS = {
+	["1.2"] = LIBSLANG_URLS_PRECISE,
+	["1.4"] = LIBSLANG_URLS_TRUSTY
+}
+
 function verify_missing_lib_args(root_dir, framework_version, arch)
 	if not root_dir then
 		return false, ('Missing root directory')
@@ -58,6 +75,10 @@ function get_libcaca_dl_page_url(framework_version, arch)
 	return LIBCACA_URLS[framework_version][arch]
 end
 
+function get_libslang_dl_page_url(framework_version, arch)
+	return LIBSLANG_URLS[framework_version][arch]
+end
+
 function parse_deb_download_page(body)
 	return body:match('href="(http://mirrors%.kernel%.org.-)">')
 end
@@ -74,7 +95,7 @@ function read_entry_data(ar)
 	return ar_file_content
 end
 
-function unpack_libcaca_deb(data)
+function unpack_deb(data, fname_match)
 	local read = false
 	local function reader(ar)
 		if read then
@@ -106,7 +127,7 @@ function unpack_libcaca_deb(data)
 	local header = ar:next_header()
 	while header do
 		path = header:pathname()
-		if path:match('.-(libcaca%.so%.0%..-)$') then
+		if path:match(fname_match) then
 			break
 		end
 		header = ar:next_header()
@@ -116,6 +137,14 @@ function unpack_libcaca_deb(data)
 	ar:close()
 
 	return data
+end
+
+function unpack_libcaca_deb(data)
+	return unpack_deb(data, '.-(libcaca%.so%.0%..-)$')
+end
+
+function unpack_libslang_deb(data)
+	return unpack_deb(data, '.-(libslang%.so%.2%..-)$')
 end
 
 function add_missing_libcaca(root_dir, framework_version, arch)
@@ -138,6 +167,33 @@ function add_missing_libcaca(root_dir, framework_version, arch)
 		target_lib_dir = root_dir .. '/files/lib/'
 	end
 	local target_lib_path = target_lib_dir .. '/libcaca.so.0'
+	local fd = io.output(target_lib_path)
+	fd:write(lib_data)
+	fd:close()
+
+	return true
+end
+
+function add_missing_libslang(root_dir, framework_version, arch)
+	local ret, error = verify_missing_lib_args(root_dir, framework_version, arch)
+	if not ret then
+		return false, error
+	end
+
+	local url = get_libslang_dl_page_url(framework_version, arch)
+	local body = get_url(url)
+	if not body then
+		return false, 'Failed to get download page at ' .. url
+	end
+	local pkg_url = parse_deb_download_page(body)
+	local pkg = get_url(pkg_url)
+	local lib_data = unpack_libslang_deb(pkg)
+
+	local target_lib_dir = find_lib_dir(root_dir, arch)
+	if not target_lib_dir then
+		target_lib_dir = root_dir .. '/files/lib/'
+	end
+	local target_lib_path = target_lib_dir .. '/libslang.so.2'
 	local fd = io.output(target_lib_path)
 	fd:write(lib_data)
 	fd:close()
