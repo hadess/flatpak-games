@@ -40,6 +40,10 @@ function identify_mojo(buffer)
 	   buffer:match('MOJOSETUP_LOGLEVEL') then
 		return true
 	end
+	if buffer:match('using Makeself') and
+	   buffer:match('modifications for mojosetup') then
+		return true
+	end
 	return false
 end
 
