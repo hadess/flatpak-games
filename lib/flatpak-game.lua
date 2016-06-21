@@ -175,11 +175,21 @@ function is_keyword(str)
 	return false
 end
 
+function get_mojo_executable(metadata)
+	if not metadata or not metadata.orig_executable then return metadata end
+	-- FIXME we might have better luck finding the filename instead
+	metadata.executable = string.gsub(metadata.orig_executable, '%%0', '/app/lib/game/data/noarch/')
+	if not file_exists(ROOT_DIR .. '/files/' .. metadata.executable) then
+		metadata.executable = string.gsub(metadata.orig_executable, '%%0', '/app/lib/game/data/')
+	end
+
+	return metadata
+end
+
 function get_metadata_mojo_compiled_parse(data)
 	local metadata = {}
 	local tokens = splitfields(data)
 	local vendor
-	local executable
 	local skip_next = false
 	for index,value in ipairs(tokens) do
 		if skip_next then
@@ -198,12 +208,11 @@ function get_metadata_mojo_compiled_parse(data)
 			metadata.icon = tokens[index + 1]
 		elseif value == 'commandline' and
 		       not is_keyword(tokens[index + 1]) then
-			executable = tokens[index + 1]
+			metadata.orig_executable = tokens[index + 1]
 		end
 	end
 
 	metadata.id_prefix = reverse_dns(vendor)
-	metadata.executable = string.gsub(executable, '%%0', '/app/lib/game/data/noarch/')
 	metadata.id = get_id(metadata)
 
 	return metadata
@@ -231,8 +240,7 @@ function get_metadata_mojo(file)
 	metadata.id_prefix = reverse_dns(vendor)
 	metadata.name = data:match('game_title = "(.-)"')
 	metadata.version = data:match('version = "(.-)"')
-	local executable = data:match('commandline = "(.-)"')
-	metadata.executable = string.gsub(executable, '%%0', '/app/lib/game/data/noarch/')
+	metadata.orig_executable = data:match('commandline = "(.-)"')
 	metadata.icon = data:match('icon = "(.-)"')
 	metadata.id = get_id(metadata)
 	metadata.arch = get_arch_for_dir(ROOT_DIR)
@@ -249,6 +257,8 @@ function get_metadata(archive_type, file)
 		if not metadata then
 			metadata = get_metadata_mojo_compiled(file)
 		end
+
+		metadata = get_mojo_executable(metadata)
 	else
 		error('Can not get metadata for unhandled archive_type ' .. (archive_type or '<unset>'))
 	end
