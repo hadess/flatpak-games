@@ -364,6 +364,11 @@ function save_manifest(metadata, enable_network)
 	end
 	write_line(f, 'sockets=x11;wayland;pulseaudio;')
 	write_line(f, 'devices=dri;')
+	f:write('\n');
+
+	write_line(f, '[Environment]')
+	write_line(f, 'SDL_VIDEO_X11_WMCLASS=' .. metadata.id)
+	write_line(f, 'SDL_VIDEO_WAYLAND_WMCLASS=' .. metadata.id)
 
 	f:close()
 	return true
