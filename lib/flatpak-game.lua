@@ -179,11 +179,14 @@ end
 
 function get_mojo_executable(metadata)
 	if not metadata or not metadata.orig_executable then return metadata end
+	local no_prefix_executable = string.gsub(metadata.orig_executable, '%%0', '/lib/game/data/noarch/')
 	-- FIXME we might have better luck finding the filename instead
 	metadata.executable = string.gsub(metadata.orig_executable, '%%0', '/app/lib/game/data/noarch/')
-	if not file_exists(ROOT_DIR .. '/files/' .. metadata.executable) then
-		metadata.executable = string.gsub(metadata.orig_executable, '%%0', '/app/lib/game/data/')
+	if not file_exists(ROOT_DIR .. '/files/' .. no_prefix_executable) then
+		no_prefix_executable = string.gsub(metadata.orig_executable, '%%0', '/lib/game/data/')
 	end
+
+	metadata.executable = '/app' .. no_prefix_executable
 
 	return metadata
 end
