@@ -385,6 +385,17 @@ function build_export()
 	return true
 end
 
+function build_bundle(id)
+	local command = { 'flatpak', 'build-bundle', 'repo', id .. '.flatpak', id }
+	local f = io.popen(shell_quote(command), 'r')
+	if not f then
+		return false
+	end
+	f:close()
+
+	return true
+end
+
 function handle(file, options)
 	local archive_type = identify(file)
 
@@ -450,6 +461,11 @@ function handle(file, options)
 
 	if not build_export() then
 		print ("Could not export build for " .. file)
+		return 1
+	end
+
+	if options.bundle and not build_bundle(metadata.id) then
+		print ("Could not build bundle for " .. file)
 		return 1
 	end
 
