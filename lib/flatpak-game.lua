@@ -385,8 +385,8 @@ function build_export()
 	return true
 end
 
-function build_bundle(id)
-	local command = { 'flatpak', 'build-bundle', 'repo', id .. '.flatpak', id }
+function build_bundle(id, arch)
+	local command = { 'flatpak', 'build-bundle', '--arch', arch, 'repo', id .. '.flatpak', id }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
@@ -464,7 +464,7 @@ function handle(file, options)
 		return 1
 	end
 
-	if options.bundle and not build_bundle(metadata.id) then
+	if options.bundle and not build_bundle(metadata.id, metadata.arch) then
 		print ("Could not build bundle for " .. file)
 		return 1
 	end
