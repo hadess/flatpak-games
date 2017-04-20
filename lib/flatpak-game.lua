@@ -470,6 +470,10 @@ function handle(file, options)
 		return 1
 	end
 
+	if not options.keep_build_dir then
+		remove_dir(ROOT_DIR)
+	end
+
 	if options.bundle then
         if not build_bundle(metadata.id) then
             print ("Could not build bundle for " .. file)
@@ -479,9 +483,6 @@ function handle(file, options)
         end
 	end
 
-	if not options.keep_build_dir then
-		remove_dir(ROOT_DIR)
-	end
 end
 
 
