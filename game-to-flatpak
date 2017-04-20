@@ -23,17 +23,20 @@
 local fg = require "lib.flatpak-game"
 
 function usage()
-	print("game-to-flatpak [--network] [--bundle] [--keep-build-dir] [--keep-repo-dir] [FILE...]")
+	print("game-to-flatpak [--network] [--bundle] [--repo=DIR] [--keep-build-dir] [--keep-repo-dir] [FILE...]")
 end
 
 local file = nil
 local options = {}
+
 for k, v in ipairs(arg) do
 	if string.sub (v, 1, 2) == "--" then
 		if v == '--network' then
 			options.network = true
+        elseif string.sub(v, 1, 7) == '--repo=' then
+            options.repo_dir = string.gsub(v, '--repo=', '')
 		elseif v == '--keep-build-dir' then
-			options.keep_build_dir= true
+			options.keep_build_dir = true
         elseif v == '--keep-repo' then
             options.keep_repo_dir = true
 		elseif v == '--bundle' then
@@ -47,6 +50,15 @@ for k, v in ipairs(arg) do
 		file = v
 		break
 	end
+end
+
+if not options.repo_dir then
+    options.repo_dir = 'repo'
+elseif not options.keep_repo_dir then
+    -- Adding it to your local repo and also making a bundle should not delete
+    -- the whole local repo.
+    print('Repo directory defined, assuming --keep-repo.')
+    options.keep_repo_dir = true
 end
 
 if not file then
