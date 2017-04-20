@@ -65,7 +65,6 @@ function identify(file)
 end
 
 function verify_gog(file)
-    print('Verifying game file.')
 	local command = { 'sh', file, '--check' }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
@@ -81,7 +80,6 @@ function verify_gog(file)
 end
 
 function verify_mojo(file)
-    print('Verifying game file.')
 	local command = { 'unzip', '-t', file }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
@@ -100,6 +98,7 @@ function verify_mojo(file)
 end
 
 function verify(archive_type, file)
+    print('Verifying game file.')
 	if archive_type == 'gog' then
 		return verify_gog(file)
 	elseif archive_type == 'mojo' then
@@ -122,6 +121,7 @@ function unpack_mojo(file)
 end
 
 function unpack(archive_type, file)
+    print('Unpacking file ' .. file)
 	if archive_type == 'gog' or
 	   archive_type == 'mojo' then
 		return unpack_mojo(file)
@@ -377,14 +377,13 @@ function save_manifest(metadata, enable_network)
 end
 
 function build_export(repo_dir)
-    print('Building repository for ' .. metadata.id)
+    print('Exporting game ' .. metadata.id .. ' to repository ' .. repo_dir)
 	local command = { 'flatpak', 'build-export', repo_dir, ROOT_DIR }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
 	end
 	f:close()
-    print('Finished building repository.')
 
 	return true
 end
@@ -398,7 +397,6 @@ function build_bundle(id, repo_dir)
 	end
 	f:close()
 
-    print('Finished building bundle.')
 	return true
 end
 
