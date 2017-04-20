@@ -98,6 +98,7 @@ function verify_mojo(file)
 end
 
 function verify(archive_type, file)
+    print('Verifying game file.')
 	if archive_type == 'gog' then
 		return verify_gog(file)
 	elseif archive_type == 'mojo' then
@@ -120,6 +121,7 @@ function unpack_mojo(file)
 end
 
 function unpack(archive_type, file)
+    print('Unpacking file ' .. file)
 	if archive_type == 'gog' or
 	   archive_type == 'mojo' then
 		return unpack_mojo(file)
@@ -374,8 +376,9 @@ function save_manifest(metadata, enable_network)
 	return true
 end
 
-function build_export()
-	local command = { 'flatpak', 'build-export', 'repo', ROOT_DIR }
+function build_export(repo_dir)
+    print('Exporting game ' .. metadata.id .. ' to repository ' .. repo_dir)
+	local command = { 'flatpak', 'build-export', repo_dir, ROOT_DIR }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
@@ -385,8 +388,9 @@ function build_export()
 	return true
 end
 
-function build_bundle(id)
-	local command = { 'flatpak', 'build-bundle', 'repo', id .. '.flatpak', id }
+function build_bundle(id, repo_dir)
+    print('Building bundle ' .. id .. '.flatpak')
+	local command = { 'flatpak', 'build-bundle', repo_dir, id .. '.flatpak', id }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
@@ -459,19 +463,24 @@ function handle(file, options)
 
 	-- FIXME cleanup
 
-	if not build_export() then
+	if not build_export(options.repo_dir) then
 		print ("Could not export build for " .. file)
 		return 1
 	end
 
-	if options.bundle and not build_bundle(metadata.id) then
-		print ("Could not build bundle for " .. file)
-		return 1
-	end
-
-	if not options.keep_files then
+	if not options.keep_build_dir then
 		remove_dir(ROOT_DIR)
 	end
+
+	if options.bundle then
+        if not build_bundle(metadata.id, options.repo_dir) then
+            print ("Could not build bundle for " .. file)
+            return 1
+        elseif not options.keep_repo_dir then
+            remove_dir(options.repo_dir)
+        end
+	end
+
 end
 
 

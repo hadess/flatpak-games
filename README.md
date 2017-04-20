@@ -1,9 +1,9 @@
-#game-to-flatpak
+# game-to-flatpak
 
 A script to automatically convert Linux game installers in various
 formats to flatpak bundles.
 
-##Requirements
+## Requirements
 
  - lua
  - lua-posix
@@ -12,38 +12,58 @@ formats to flatpak bundles.
  - unzip
  - flatpak
  
-##Features
+## Features
 
  - Supports the MojoSetup installer
  - Supports the MojoSetup + makeself installer (as used by GOG.com)
 
-##Usage
+## Usage
 
-This will add the game to the `repo` directory:
-```
-./game-to-flatpak [installer file]
-```
+### Adding the game to your local repo
 
-You will only need to do this once:
+You can define which repo to add the game to by using the `--repo` option:
 ```
-flatpak --user remote-add --no-gpg-verify --if-not-exists game-repo repo
+./game-to-flatpak --repo=[repo directory] [installer file]
 ```
 
-Check which games are available in the repo:
+If the specified directory is not already a repo, it will be created. If the 
+`--repo` option is not used, it will use the directory `repo`.
+
+If the repo you defined is new, you will need to add it to your Flatpak configuration
+before you can install it. This only needs to be run once:
 ```
-flatpak --user remote-ls game-repo
+flatpak --user remote-add --no-gpg-verify --if-not-exists [repo name] [repo directory]
 ```
 
-Install the game for that user:
+`game-to-flatpak` should print the game's name as it is running, but it can also
+be found with:
 ```
-flatpak --user install game-repo com.gog.Call_of_Cthulhu__Shadow_of_the_Comet
+flatpak --user remote-ls [repo name]
 ```
 
-##Similar projects
+Finally, you can install the game from the repository:
+```
+flatpak --user install [repo name] [game name]
+```
 
- - [Unpacker classes] (https://cgit.gentoo.org/proj/gamerlay.git/tree/eclass) from [Gentoo's gamerlay] (https://cgit.gentoo.org/proj/gamerlay.git/)
- - [./play.it] (http://wiki.dotslashplay.it/en/start)'s [Debianification scripts] (http://www.dotslashplay.it/scripts/)
+### Building and installing a bundle
 
-##Out of scope
+You can also build a redistributable bundle with the `--bundle` option:
+```
+./game-to-flatpak --bundle [installer file]
+```
+
+These can be installed directly without a repo:
+
+```
+flatpak --user install [bundle filename]
+```
+
+## Similar projects
+
+ - [Unpacker classes](https://cgit.gentoo.org/proj/gamerlay.git/tree/eclass) from [Gentoo's gamerlay](https://cgit.gentoo.org/proj/gamerlay.git/)
+ - [./play.it](http://wiki.dotslashplay.it/en/start)'s [Debianification scripts](http://www.dotslashplay.it/scripts/)
+
+## Out of scope
 
  - WINE, DOSBox, etc. automagic wrappers are not planned, don't ask for them.
