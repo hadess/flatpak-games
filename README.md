@@ -35,8 +35,8 @@ before you can install it. This only needs to be run once:
 flatpak --user remote-add --no-gpg-verify --if-not-exists [repo name] [repo directory]
 ```
 
-`game-to-flatpak` should print the game's name as it is running, but if you missed
-it, it can be found with:
+`game-to-flatpak` should print the game's name as it is running, but it can also
+be found with:
 ```
 flatpak --user remote-ls [repo name]
 ```
