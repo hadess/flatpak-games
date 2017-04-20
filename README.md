@@ -19,24 +19,44 @@ formats to flatpak bundles.
 
 ##Usage
 
-This will add the game to the `repo` directory:
+###Adding the game to your local repo
+
+You can define which repo to add the game to by using the `--repo` option:
 ```
-./game-to-flatpak [installer file]
+./game-to-flatpak --repo=[repo directory] [installer file]
 ```
 
-You will only need to do this once:
+If the specified directory is not already a repo, it will be created. If the 
+`--repo` option is not used, it will use the directory `repo`.
+
+If the repo you defined is new, you will need to add it to your Flatpak configuration
+before you can install it. This only needs to be run once:
 ```
-flatpak --user remote-add --no-gpg-verify --if-not-exists game-repo repo
+flatpak --user remote-add --no-gpg-verify --if-not-exists [repo name] [repo directory]
 ```
 
-Check which games are available in the repo:
+`game-to-flatpak` should print the game's name as it is running, but if you missed
+it, it can be found with:
 ```
-flatpak --user remote-ls game-repo
+flatpak --user remote-ls [repo name]
 ```
 
-Install the game for that user:
+Finally, you can install the game from the repository:
 ```
-flatpak --user install game-repo com.gog.Call_of_Cthulhu__Shadow_of_the_Comet
+flatpak --user install [repo name] [game name]
+```
+
+###Building and installing a bundle
+
+You can also build a redistributable bundle with the `--bundle` option:
+```
+./game-to-flatpak --bundle [installer file]
+```
+
+These can be installed directly without a repo:
+
+```
+flatpak --user install [bundle filename]
 ```
 
 ##Similar projects
