@@ -375,7 +375,7 @@ function save_manifest(metadata, enable_network)
 end
 
 function build_export()
-	local command = { 'flatpak', 'build-export', 'repo', ROOT_DIR }
+	local command = { 'flatpak', 'build-export', options.repo_dir, ROOT_DIR }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
@@ -386,7 +386,7 @@ function build_export()
 end
 
 function build_bundle(id)
-	local command = { 'flatpak', 'build-bundle', 'repo', id .. '.flatpak', id }
+	local command = { 'flatpak', 'build-bundle', options.repo_dir, id .. '.flatpak', id }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
@@ -459,7 +459,7 @@ function handle(file, options)
 
 	-- FIXME cleanup
 
-	if not build_export() then
+	if not build_export(options.repo_dir) then
 		print ("Could not export build for " .. file)
 		return 1
 	end
@@ -469,11 +469,11 @@ function handle(file, options)
 	end
 
 	if options.bundle then
-        if not build_bundle(metadata.id) then
+        if not build_bundle(metadata.id, options.repo_dir) then
             print ("Could not build bundle for " .. file)
             return 1
         elseif not options.keep_repo_dir then
-            remove_dir('repo')
+            remove_dir(options.repo_dir)
         end
     end
 
