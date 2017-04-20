@@ -65,6 +65,7 @@ function identify(file)
 end
 
 function verify_gog(file)
+    print('Verifying game file.')
 	local command = { 'sh', file, '--check' }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
@@ -80,6 +81,7 @@ function verify_gog(file)
 end
 
 function verify_mojo(file)
+    print('Verifying game file.')
 	local command = { 'unzip', '-t', file }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
@@ -375,17 +377,20 @@ function save_manifest(metadata, enable_network)
 end
 
 function build_export()
+    print('Building repository for ' .. metadata.id)
 	local command = { 'flatpak', 'build-export', 'repo', ROOT_DIR }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
 		return false
 	end
 	f:close()
+    print('Finished building repository.')
 
 	return true
 end
 
 function build_bundle(id)
+    print('Building bundle ' .. id .. '.flatpak')
 	local command = { 'flatpak', 'build-bundle', 'repo', id .. '.flatpak', id }
 	local f = io.popen(shell_quote(command), 'r')
 	if not f then
@@ -393,6 +398,7 @@ function build_bundle(id)
 	end
 	f:close()
 
+    print('Finished building bundle.')
 	return true
 end
 
@@ -464,12 +470,16 @@ function handle(file, options)
 		return 1
 	end
 
-	if options.bundle and not build_bundle(metadata.id) then
-		print ("Could not build bundle for " .. file)
-		return 1
+	if options.bundle then
+        if not build_bundle(metadata.id) then
+            print ("Could not build bundle for " .. file)
+            return 1
+        elseif not options.keep_repo then
+            remove_dir('repo')
+        end
 	end
 
-	if not options.keep_files then
+	if not options.keep_build_dir then
 		remove_dir(ROOT_DIR)
 	end
 end
