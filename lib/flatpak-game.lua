@@ -351,7 +351,7 @@ function save_manifest(metadata, enable_network)
 	-- http://flatpak.org/developer.html#Anatomy_of_a_Flatpak_App
 	write_line(f, '[Application]')
 	write_line(f, 'name=' .. metadata.id)
-	write_line(f, 'runtime=org.freedesktop.Platform/' .. metadata.arch .. '/1.4')
+	write_line(f, 'runtime=org.freedesktop.Platform/' .. metadata.arch .. '/1.6')
 	-- FIXME is that going to work?
 	write_line(f, 'command=' .. metadata.executable)
 	f:write('\n')
