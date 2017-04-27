@@ -23,7 +23,7 @@
 local fg = require "lib.flatpak-game"
 
 function usage()
-	print("game-to-flatpak [--network] [--keep-files] [--bundle] [FILE...]")
+	print("game-to-flatpak [--network] [--keep-build-dir] [--bundle] [FILE...]")
 end
 
 local file = nil
@@ -32,8 +32,8 @@ for k, v in ipairs(arg) do
 	if string.sub (v, 1, 2) == "--" then
 		if v == '--network' then
 			options.network = true
-		elseif v == '--keep-files' then
-			options.keep_files = true
+		elseif v == '--keep-build-dir' then
+			options.keep_build_dir = true
 		elseif v == '--bundle' then
 			options.bundle = true
 		else

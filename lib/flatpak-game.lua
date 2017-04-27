@@ -469,7 +469,7 @@ function handle(file, options)
 		return 1
 	end
 
-	if not options.keep_files then
+	if not options.keep_build_dir then
 		remove_dir(ROOT_DIR)
 	end
 end
