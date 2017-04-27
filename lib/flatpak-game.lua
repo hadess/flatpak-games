@@ -464,14 +464,16 @@ function handle(file, options)
 		return 1
 	end
 
-	if options.bundle and not build_bundle(metadata.id) then
-		print ("Could not build bundle for " .. file)
-		return 1
-	end
+    if options.bundle then
+        if not build_bundle(metadata.id) then
+            print ("Could not build bundle for " .. file)
+            return 1
+        elseif not options.keep_repo_dir then
+            remove_dir('repo')
+        end
+    end
 
 	if not options.keep_build_dir then
 		remove_dir(ROOT_DIR)
 	end
 end
-
-
