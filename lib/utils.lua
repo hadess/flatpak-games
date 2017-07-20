@@ -21,6 +21,7 @@
 local posix = require "posix"
 local socket = require "socket"
 local http = require "socket.http"
+local https = require "ssl.https"
 
 -- From http://luci.subsignal.org/trac/browser/luci/trunk/libs/core/luasrc/fs.lua?rev=4103
 --- Create a new directory, recursively on demand.
@@ -75,7 +76,14 @@ function file_exists(path)
 end
 
 function get_url(url)
-	local body, code, headers = http.request(url)
+	local body, code, headers
+	if url:match('https%:.-') then
+		body, code, headers = https.request(url)
+	elseif url:match('http%:.-') then
+		body, code, headers = http.request(url)
+	else
+		return nil
+	end
 
 	if code == 200 then
 		return body
