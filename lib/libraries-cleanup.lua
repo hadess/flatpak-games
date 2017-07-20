@@ -21,16 +21,16 @@
 require "lib.utils"
 local archive = require "archive"
 
--- From: http://packages.ubuntu.com/precise/libcaca0
+-- From: https://packages.ubuntu.com/precise/libcaca0
 LIBCACA_URLS_PRECISE = {
-	["i386"] = 'http://packages.ubuntu.com/precise/i386/libcaca0/download',
-	['x86_64'] = 'http://packages.ubuntu.com/precise/amd64/libcaca0/download'
+	["i386"] = 'https://packages.ubuntu.com/precise/i386/libcaca0/download',
+	['x86_64'] = 'https://packages.ubuntu.com/precise/amd64/libcaca0/download'
 }
 
--- From: http://packages.ubuntu.com/trusty/libcaca0
+-- From: https://packages.ubuntu.com/trusty/libcaca0
 LIBCACA_URLS_TRUSTY = {
-	["i386"] = 'http://packages.ubuntu.com/trusty/i386/libcaca0/download',
-	['x86_64'] = 'http://packages.ubuntu.com/trusty/amd64/libcaca0/download'
+	["i386"] = 'https://packages.ubuntu.com/trusty/i386/libcaca0/download',
+	['x86_64'] = 'https://packages.ubuntu.com/trusty/amd64/libcaca0/download'
 }
 
 LIBCACA_URLS = {
@@ -38,16 +38,16 @@ LIBCACA_URLS = {
 	["1.4"] = LIBCACA_URLS_TRUSTY
 }
 
--- From: http://packages.ubuntu.com/precise/libslang2
+-- From: https://packages.ubuntu.com/precise/libslang2
 LIBSLANG_URLS_PRECISE = {
-	["i386"] = 'http://packages.ubuntu.com/precise/i386/libslang2/download',
-	['x86_64'] = 'http://packages.ubuntu.com/precise/amd64/libslang2/download'
+	["i386"] = 'https://packages.ubuntu.com/precise/i386/libslang2/download',
+	['x86_64'] = 'https://packages.ubuntu.com/precise/amd64/libslang2/download'
 }
 
--- From: http://packages.ubuntu.com/trusty/libslang2
+-- From: https://packages.ubuntu.com/trusty/libslang2
 LIBSLANG_URLS_TRUSTY = {
-	["i386"] = 'http://packages.ubuntu.com/trusty/i386/libslang2/download',
-	['x86_64'] = 'http://packages.ubuntu.com/trusty/amd64/libslang2/download'
+	["i386"] = 'https://packages.ubuntu.com/trusty/i386/libslang2/download',
+	['x86_64'] = 'https://packages.ubuntu.com/trusty/amd64/libslang2/download'
 }
 
 LIBSLANG_URLS = {
@@ -55,16 +55,16 @@ LIBSLANG_URLS = {
 	["1.4"] = LIBSLANG_URLS_TRUSTY
 }
 
--- From: http://packages.ubuntu.com/precise/libjack0
+-- From: https://packages.ubuntu.com/precise/libjack0
 LIBJACK_URLS_PRECISE = {
-	["i386"] = 'http://packages.ubuntu.com/precise/i386/libjack0/download',
-	['x86_64'] = 'http://packages.ubuntu.com/precise/amd64/libjack0/download'
+	["i386"] = 'https://packages.ubuntu.com/precise/i386/libjack0/download',
+	['x86_64'] = 'https://packages.ubuntu.com/precise/amd64/libjack0/download'
 }
 
--- From: http://packages.ubuntu.com/trusty/libjack0
+-- From: https://packages.ubuntu.com/trusty/libjack0
 LIBJACK_URLS_TRUSTY = {
-	["i386"] = 'http://packages.ubuntu.com/trusty/i386/libjack0/download',
-	['x86_64'] = 'http://packages.ubuntu.com/trusty/amd64/libjack0/download'
+	["i386"] = 'https://packages.ubuntu.com/trusty/i386/libjack0/download',
+	['x86_64'] = 'https://packages.ubuntu.com/trusty/amd64/libjack0/download'
 }
 
 LIBJACK_URLS = {
