@@ -1,9 +1,9 @@
-#game-to-flatpak
+# game-to-flatpak
 
 A script to automatically convert Linux game installers in various
 formats to flatpak bundles.
 
-##Requirements
+## Requirements
 
  - lua
  - lua-posix
@@ -13,12 +13,12 @@ formats to flatpak bundles.
  - unzip
  - flatpak
  
-##Features
+## Features
 
  - Supports the MojoSetup installer
  - Supports the MojoSetup + makeself installer (as used by GOG.com)
 
-##Usage
+## Usage
 
 This will add the game to the `repo` directory:
 ```
@@ -40,11 +40,11 @@ Install the game for that user:
 flatpak --user install game-repo com.gog.Call_of_Cthulhu__Shadow_of_the_Comet
 ```
 
-##Similar projects
+## Similar projects
 
- - [Unpacker classes] (https://cgit.gentoo.org/proj/gamerlay.git/tree/eclass) from [Gentoo's gamerlay] (https://cgit.gentoo.org/proj/gamerlay.git/)
- - [./play.it] (http://wiki.dotslashplay.it/en/start)'s [Debianification scripts] (http://www.dotslashplay.it/scripts/)
+ - [Unpacker classes](https://cgit.gentoo.org/proj/gamerlay.git/tree/eclass) from [Gentoo's gamerlay](https://cgit.gentoo.org/proj/gamerlay.git/)
+ - [./play.it](http://wiki.dotslashplay.it/en/start)'s [Debianification scripts](http://www.dotslashplay.it/scripts/)
 
-##Out of scope
+## Out of scope
 
  - WINE, DOSBox, etc. automagic wrappers are not planned, don't ask for them.
