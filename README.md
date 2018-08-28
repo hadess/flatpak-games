@@ -44,6 +44,7 @@ flatpak --user install game-repo com.gog.Call_of_Cthulhu__Shadow_of_the_Comet
 
  - [Unpacker classes](https://cgit.gentoo.org/proj/gamerlay.git/tree/eclass) from [Gentoo's gamerlay](https://cgit.gentoo.org/proj/gamerlay.git/)
  - [./play.it](http://wiki.dotslashplay.it/en/start)'s [Debianification scripts](http://www.dotslashplay.it/scripts/)
+ - [flatpak-gog](https://github.com/kujeger/flatpak-gog/), a project with similar goals, written in Python
 
 ## Out of scope
 
