@@ -8,11 +8,11 @@ formats to flatpak bundles.
  - lua
  - lua-posix
  - lua-socket
- - lua-archive
+ - lua-archive ([from this location](https://github.com/hadess/lua-archive), [PR](https://github.com/brimworks/lua-archive/pull/2))
  - luasec
  - unzip
- - flatpak
- 
+ - flatpak-builder
+
 ## Features
 
  - Supports the MojoSetup installer
